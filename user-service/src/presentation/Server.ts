@@ -1,6 +1,7 @@
 import express from "express";
 
 import cors, { CorsOptions } from "cors";
+import { GenerateOTPController } from "./controllers/generateOTPController";
 
 const app = express();
 
@@ -11,14 +12,21 @@ const corsOptions: CorsOptions = {
 };
 
 export class Server {
-  static run({ port }: { port: number }) {
-
+  static run({
+    port,
+    generateOTPController,
+  }: {
+    port: number;
+    generateOTPController: GenerateOTPController;
+  }) {
     app.use(cors(corsOptions));
     app.use(express.json(), express.urlencoded({ extended: true }));
 
     app.get("/", (_req, res) => {
       res.send({ status: "Running", service: "User-service", port });
     });
+
+    app.post("/otp/generate", generateOTPController.handle);
 
     app.listen(port, () => {
       console.log(`Server running on port ${port}`);
