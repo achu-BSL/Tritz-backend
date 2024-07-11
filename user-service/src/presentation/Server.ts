@@ -2,6 +2,8 @@ import express from "express";
 
 import cors, { CorsOptions } from "cors";
 import { GenerateOTPController } from "./controllers/generateOTPController";
+import { ValidateOTPMiddleware } from "./middlewares/ValidateOTPMiddleware";
+import { ValidateOTPController } from "./controllers/ValidateOTPController";
 
 const app = express();
 
@@ -15,9 +17,13 @@ export class Server {
   static run({
     port,
     generateOTPController,
+    validateOTPMiddleware,
+    validateOTPController,
   }: {
     port: number;
     generateOTPController: GenerateOTPController;
+    validateOTPMiddleware: ValidateOTPMiddleware;
+    validateOTPController: ValidateOTPController;
   }) {
     app.use(cors(corsOptions));
     app.use(express.json(), express.urlencoded({ extended: true }));
@@ -28,6 +34,12 @@ export class Server {
 
     app.post("/otp/generate", (req, res) =>
       generateOTPController.handle(req, res)
+    );
+
+    app.post(
+      "/otp/validate",
+      (req, res, next) => validateOTPMiddleware.use(req, res, next),
+      (req, res) => validateOTPController.handle(req, res)
     );
 
     app.listen(port, () => {
