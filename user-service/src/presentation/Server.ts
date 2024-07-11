@@ -26,7 +26,9 @@ export class Server {
       res.send({ status: "Running", service: "User-service", port });
     });
 
-    app.post("/otp/generate", generateOTPController.handle);
+    app.post("/otp/generate", (req, res) =>
+      generateOTPController.handle(req, res)
+    );
 
     app.listen(port, () => {
       console.log(`Server running on port ${port}`);

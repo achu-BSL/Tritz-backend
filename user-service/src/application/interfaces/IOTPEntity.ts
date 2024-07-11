@@ -1,5 +1,5 @@
 export interface IOTPEntity {
     email: string;
-    otp: number;
+    otp: string;
     expiresAt: Date;
 };

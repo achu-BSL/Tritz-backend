@@ -7,12 +7,14 @@ import { ITokenManager } from "../interfaces/ITokenManager";
 import { IRegisterTokenPayload } from "../interfaces/IRegisterTokenPayload";
 
 import bcrypt from "bcrypt";
+import { MailService } from "../../infrastructure/services/MailService";
 
 export class GenerateOTP {
   constructor(
     private userRepo: IUserRepository,
     private otpRepo: IOTPRepository,
-    private registerTokenManger: ITokenManager<IRegisterTokenPayload>
+    private registerTokenManger: ITokenManager<IRegisterTokenPayload>,
+    private mailService: MailService
   ) {}
 
   async execute(user: IUser) {
@@ -24,14 +26,20 @@ export class GenerateOTP {
 
     const hashedPassword = await bcrypt.hash(user.password, 10);
 
-    const otp = randomInt(4);
-    const expiresAt = new Date(Date.now() * 10 * 60 * 1000);
+    const otp = `${randomInt(0,9)}${randomInt(0,9)}${randomInt(0,9)}${randomInt(0,9)}`;
+    const expiresAt = new Date(Date.now() + 10 * 60 * 1000);
     await this.otpRepo.save(new OTPEntity(user.email, otp, expiresAt));
+    await this.mailService.sendMail({
+      to: user.email,
+      subject: "Register OTP",
+      text: `Your OTP${otp}`,
+      html: `<h2>Your OTP is ${otp} </h2>`,
+    });
 
     const token = this.registerTokenManger.generate(
       {
         username: user.username,
-        email: user.username,
+        email: user.email,
         password: hashedPassword,
       },
       "1h"

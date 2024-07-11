@@ -5,13 +5,11 @@ import otpModel from "../database/model/OTPModel";
 
 export class OTPRepository implements IOTPRepository {
   async save(otp: IOTPEntity) {
-    const mongoOTP = new otpModel({
-      otp: otp.otp,
-      email: otp.email,
-      expireAt: otp.expiresAt,
-    });
-
-    await mongoOTP.save();
+    await otpModel.updateOne(
+      { email: otp.email },
+      { otp: otp.otp, expireAt: otp.expiresAt },
+      { upsert: true }
+    );
   }
 
   async findByEmail(email: string) {
