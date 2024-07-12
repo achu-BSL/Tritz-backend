@@ -4,6 +4,7 @@ import cors, { CorsOptions } from "cors";
 import { GenerateOTPController } from "./controllers/GenerateOTPController";
 import { ValidateOTPMiddleware } from "./middlewares/ValidateOTPMiddleware";
 import { ValidateOTPController } from "./controllers/ValidateOTPController";
+import { LoginController } from "./controllers/LoginController";
 
 const app = express();
 
@@ -19,11 +20,13 @@ export class Server {
     generateOTPController,
     validateOTPMiddleware,
     validateOTPController,
+    loginController,
   }: {
     port: number;
     generateOTPController: GenerateOTPController;
     validateOTPMiddleware: ValidateOTPMiddleware;
     validateOTPController: ValidateOTPController;
+    loginController: LoginController;
   }) {
     app.use(cors(corsOptions));
     app.use(express.json(), express.urlencoded({ extended: true }));
@@ -41,6 +44,8 @@ export class Server {
       (req, res, next) => validateOTPMiddleware.use(req, res, next),
       (req, res) => validateOTPController.handle(req, res)
     );
+
+    app.post("/login", (req, res) => loginController.handle(req, res));
 
     app.listen(port, () => {
       console.log(`Server running on port ${port}`);
