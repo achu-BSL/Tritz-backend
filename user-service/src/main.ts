@@ -6,7 +6,7 @@ import { UserRepository } from "./infrastructure/repositories/UserRepository";
 import { AccessTokenManager } from "./infrastructure/security/AccessTokenManager";
 import { RegisterTokenManager } from "./infrastructure/security/RegisterTokenManager";
 import { MailService } from "./infrastructure/services/MailService";
-import { GenerateOTPController } from "./presentation/controllers/generateOTPController";
+import { GenerateOTPController } from "./presentation/controllers/GenerateOTPController";
 import { ValidateOTPController } from "./presentation/controllers/ValidateOTPController";
 import { ValidateOTPMiddleware } from "./presentation/middlewares/ValidateOTPMiddleware";
 import { Server } from "./presentation/Server";

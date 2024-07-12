@@ -1,7 +1,7 @@
 import express from "express";
 
 import cors, { CorsOptions } from "cors";
-import { GenerateOTPController } from "./controllers/generateOTPController";
+import { GenerateOTPController } from "./controllers/GenerateOTPController";
 import { ValidateOTPMiddleware } from "./middlewares/ValidateOTPMiddleware";
 import { ValidateOTPController } from "./controllers/ValidateOTPController";
 

@@ -12,7 +12,7 @@ export class GenerateOTPController {
       const token = await this._useCase.execute(user);
       res.status(201).send({registerToken: token, msg: "OTP has been sent successfully"});
     } catch (err) {
-        res.status((err as Error & {statusCode: number}).statusCode || 500).send({message: (err as Error).message})
+        res.status((err as Error & {statusCode: number}).statusCode || 500).send({msg: (err as Error).message})
     }
   }
 }
