@@ -5,6 +5,7 @@ import { GenerateOTPController } from "./controllers/GenerateOTPController";
 import { ValidateOTPMiddleware } from "./middlewares/ValidateOTPMiddleware";
 import { ValidateOTPController } from "./controllers/ValidateOTPController";
 import { LoginController } from "./controllers/LoginController";
+import { GoogleOAuthController } from "./controllers/GoogleOAuthController";
 
 const app = express();
 
@@ -21,12 +22,14 @@ export class Server {
     validateOTPMiddleware,
     validateOTPController,
     loginController,
+    googleOAuthController,
   }: {
     port: number;
     generateOTPController: GenerateOTPController;
     validateOTPMiddleware: ValidateOTPMiddleware;
     validateOTPController: ValidateOTPController;
     loginController: LoginController;
+    googleOAuthController: GoogleOAuthController;
   }) {
     app.use(cors(corsOptions));
     app.use(express.json(), express.urlencoded({ extended: true }));
@@ -46,6 +49,10 @@ export class Server {
     );
 
     app.post("/login", (req, res) => loginController.handle(req, res));
+
+    app.post("/oauth/google", (req, res) =>
+      googleOAuthController.handle(req, res)
+    );
 
     app.listen(port, () => {
       console.log(`Server running on port ${port}`);
