@@ -27,7 +27,7 @@ export class UserRepository implements IUserRepository {
       userId: mongoUser._id.toString(),
       username: mongoUser.username,
       email: mongoUser.email,
-      password: "",
+      password: mongoUser.password,
     });
   }
 
@@ -38,7 +38,7 @@ export class UserRepository implements IUserRepository {
       userId: mongoUser._id.toString(),
       username: mongoUser.username,
       email: mongoUser.email,
-      password: "",
+      password: mongoUser.password,
     });
   }
 
@@ -49,7 +49,7 @@ export class UserRepository implements IUserRepository {
       userId: mongoUser._id.toString(),
       username: mongoUser.username,
       email: mongoUser.email,
-      password: "",
+      password: mongoUser.password,
     });
   }
 
@@ -60,7 +60,7 @@ export class UserRepository implements IUserRepository {
       userId: mongoUser._id.toString(),
       username: mongoUser.username,
       email: mongoUser.email,
-      password: "",
+      password: mongoUser.password,
     });
   }
 }
