@@ -10,6 +10,7 @@ export class UserRepository implements IUserRepository {
       username: user.username,
       email: user.email,
       password: user.password,
+      profile: user.profile || "",
     });
     await mongoUser.save();
     return new User({
@@ -32,7 +33,7 @@ export class UserRepository implements IUserRepository {
   }
 
   async findUserByUsername(username: string) {
-    const mongoUser = await userModel.findOne({username});
+    const mongoUser = await userModel.findOne({ username });
     if (!mongoUser) return null;
     return new User({
       userId: mongoUser._id.toString(),
@@ -43,7 +44,7 @@ export class UserRepository implements IUserRepository {
   }
 
   async findUserByEmail(email: string) {
-    const mongoUser = await userModel.findOne({email});
+    const mongoUser = await userModel.findOne({ email });
     if (!mongoUser) return null;
     return new User({
       userId: mongoUser._id.toString(),
@@ -54,7 +55,9 @@ export class UserRepository implements IUserRepository {
   }
 
   async findUserByEmailOrUsername(email: string, username: string) {
-    const mongoUser = await userModel.findOne({$or: [{username}, {email}]});
+    const mongoUser = await userModel.findOne({
+      $or: [{ username }, { email }],
+    });
     if (!mongoUser) return null;
     return new User({
       userId: mongoUser._id.toString(),

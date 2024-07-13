@@ -6,7 +6,7 @@ import jwt from "jsonwebtoken";
 
 export class AccessTokenManager implements ITokenManager<IAccessTokenPayload> {
   private readonly SECRET = process.env.ACCESS_TOKEN_SECRET!;
-  generate(payload: IAccessTokenPayload, expiry: string) {
+  generate(payload: IAccessTokenPayload, expiry = "5d") {
     return jwt.sign(payload, this.SECRET, { expiresIn: expiry });
   }
 
