@@ -15,7 +15,7 @@ export class ValidateOTPMiddleware {
       if (!bearerToken) throw new Error("register token required");
       if (typeof bearerToken !== "string")
         throw new Error("Invalid register token");
-      const payload = this.registerTokenManager.decode(
+      const payload = this.registerTokenManager.verify(
         bearerToken.split(" ")[1]
       );
       req.user = payload;

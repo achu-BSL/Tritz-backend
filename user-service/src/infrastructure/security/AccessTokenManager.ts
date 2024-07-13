@@ -10,7 +10,7 @@ export class AccessTokenManager implements ITokenManager<IAccessTokenPayload> {
     return jwt.sign(payload, this.SECRET, { expiresIn: expiry });
   }
 
-  decode(token: string) {
+  verify(token: string) {
     return jwt.verify(token, this.SECRET) as IAccessTokenPayload;
   }
 }
