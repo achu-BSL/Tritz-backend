@@ -7,6 +7,7 @@ import { OTPRepository } from "./infrastructure/repositories/OTPRepository";
 import { UserRepository } from "./infrastructure/repositories/UserRepository";
 import { AccessTokenManager } from "./infrastructure/security/AccessTokenManager";
 import { GoogleOAuthManager } from "./infrastructure/security/GoogleOAuthManager";
+import { OTPManager } from "./infrastructure/security/OTPManger";
 import { RegisterTokenManager } from "./infrastructure/security/RegisterTokenManager";
 import { MailService } from "./infrastructure/services/MailService";
 import { GenerateOTPController } from "./presentation/controllers/GenerateOTPController";
@@ -22,22 +23,25 @@ const main = async () => {
 
   const userRepo = new UserRepository();
   const otpRepo = new OTPRepository();
+  const mailService = new MailService();
 
   const registerTokenManager = new RegisterTokenManager();
   const accessTokenManager = new AccessTokenManager();
   const googleOAuthManager = new GoogleOAuthManager();
-
-  const mailService = new MailService();
+  const otpManager = new OTPManager(otpRepo, mailService);
 
   const generateOTP = new GenerateOTP(
     userRepo,
-    otpRepo,
-    registerTokenManager,
-    mailService
+    otpManager,
+    registerTokenManager
   );
-  const validateOTP = new ValidateOTP(otpRepo, userRepo, accessTokenManager);
+  const validateOTP = new ValidateOTP(otpManager, userRepo, accessTokenManager);
   const login = new Login(userRepo, accessTokenManager);
-  const googleOAuth = new GoogleOAuth(googleOAuthManager, userRepo, accessTokenManager);
+  const googleOAuth = new GoogleOAuth(
+    googleOAuthManager,
+    userRepo,
+    accessTokenManager
+  );
 
   const validateOTPMiddleware = new ValidateOTPMiddleware(registerTokenManager);
 
@@ -52,7 +56,7 @@ const main = async () => {
     validateOTPMiddleware,
     validateOTPController,
     loginController,
-    googleOAuthController
+    googleOAuthController,
   });
 };
 
