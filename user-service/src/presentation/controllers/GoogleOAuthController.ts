@@ -8,6 +8,9 @@ export class GoogleOAuthController {
     const { code } = req.body;
     try {
       const token = await this.googleOAuth.execute(code);
+      res.cookie("access-token", token, {
+        httpOnly: true,
+      });
       res.send({ msg: "login successfully", accessToken: token });
     } catch (err) {
       res
