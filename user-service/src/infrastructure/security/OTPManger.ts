@@ -27,11 +27,11 @@ export class OTPManager implements IOTPManager {
     }
   }
 
-  async mailOTP(email: string, otp: string) {
+  async mailOTP(email: string, otp: string, subject: string) {
     try {
       await this.mailService.sendMail({
         to: email,
-        subject: "Register OTP",
+        subject: subject,
         text: `Your OTP${otp}`,
         html: `<h2>Your OTP is ${otp} </h2>`,
       });

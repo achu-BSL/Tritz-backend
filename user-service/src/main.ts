@@ -1,4 +1,5 @@
 import { GenerateOTP } from "./application/use-cases/GenerateOTP";
+import { GenerateResetPasswordOTP } from "./application/use-cases/GenerateResetPasswordOTP";
 import { GoogleOAuth } from "./application/use-cases/GoogleOAuth";
 import { Login } from "./application/use-cases/Login";
 import { ValidateOTP } from "./application/use-cases/ValidateOTP";
@@ -9,8 +10,10 @@ import { AccessTokenManager } from "./infrastructure/security/AccessTokenManager
 import { GoogleOAuthManager } from "./infrastructure/security/GoogleOAuthManager";
 import { OTPManager } from "./infrastructure/security/OTPManger";
 import { RegisterTokenManager } from "./infrastructure/security/RegisterTokenManager";
+import { ResetPasswordOTPTokenManager } from "./infrastructure/security/ResetPasswordOTPTokenManager";
 import { MailService } from "./infrastructure/services/MailService";
 import { GenerateOTPController } from "./presentation/controllers/GenerateOTPController";
+import { GenerateResetPasswordOTPController } from "./presentation/controllers/GenerateResetPasswordOTPController";
 import { GoogleOAuthController } from "./presentation/controllers/GoogleOAuthController";
 import { LoginController } from "./presentation/controllers/LoginController";
 import { ValidateOTPController } from "./presentation/controllers/ValidateOTPController";
@@ -29,18 +32,24 @@ const main = async () => {
   const accessTokenManager = new AccessTokenManager();
   const googleOAuthManager = new GoogleOAuthManager();
   const otpManager = new OTPManager(otpRepo, mailService);
-
   const generateOTP = new GenerateOTP(
     userRepo,
     otpManager,
     registerTokenManager
   );
+  const resetPasswordOTPTokenManager = new ResetPasswordOTPTokenManager();
+
   const validateOTP = new ValidateOTP(otpManager, userRepo, accessTokenManager);
   const login = new Login(userRepo, accessTokenManager);
   const googleOAuth = new GoogleOAuth(
     googleOAuthManager,
     userRepo,
     accessTokenManager
+  );
+  const generateResetPasswordOTP = new GenerateResetPasswordOTP(
+    userRepo,
+    otpManager,
+    resetPasswordOTPTokenManager
   );
 
   const validateOTPMiddleware = new ValidateOTPMiddleware(registerTokenManager);
@@ -49,6 +58,8 @@ const main = async () => {
   const validateOTPController = new ValidateOTPController(validateOTP);
   const loginController = new LoginController(login);
   const googleOAuthController = new GoogleOAuthController(googleOAuth);
+  const generateResetPasswordOTPController =
+    new GenerateResetPasswordOTPController(generateResetPasswordOTP);
 
   Server.run({
     port,
@@ -57,6 +68,7 @@ const main = async () => {
     validateOTPController,
     loginController,
     googleOAuthController,
+    generateResetPasswordOTPController,
   });
 };
 

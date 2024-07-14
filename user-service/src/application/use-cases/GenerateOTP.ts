@@ -22,7 +22,7 @@ export class GenerateOTP {
 
     const otp = this.otpManager.generateOTP(4);
     await this.otpManager.saveOTP(user.email, otp);
-    await this.otpManager.mailOTP(user.email, otp);
+    await this.otpManager.mailOTP(user.email, otp, "Register OTP");
 
     const hashedPassword = await bcrypt.hash(user.password, 10);
 

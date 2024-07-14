@@ -7,6 +7,7 @@ import { ValidateOTPMiddleware } from "./middlewares/ValidateOTPMiddleware";
 import { ValidateOTPController } from "./controllers/ValidateOTPController";
 import { LoginController } from "./controllers/LoginController";
 import { GoogleOAuthController } from "./controllers/GoogleOAuthController";
+import { GenerateResetPasswordOTPController } from "./controllers/GenerateResetPasswordOTPController";
 
 const app = express();
 
@@ -24,6 +25,7 @@ export class Server {
     validateOTPController,
     loginController,
     googleOAuthController,
+    generateResetPasswordOTPController,
   }: {
     port: number;
     generateOTPController: GenerateOTPController;
@@ -31,6 +33,7 @@ export class Server {
     validateOTPController: ValidateOTPController;
     loginController: LoginController;
     googleOAuthController: GoogleOAuthController;
+    generateResetPasswordOTPController: GenerateResetPasswordOTPController;
   }) {
     app.use(cors(corsOptions));
     app.use(express.json(), express.urlencoded({ extended: true }));
@@ -54,6 +57,10 @@ export class Server {
 
     app.post("/oauth/google", (req, res) =>
       googleOAuthController.handle(req, res)
+    );
+
+    app.post("/reset-password-otp/generate", (req, res) =>
+      generateResetPasswordOTPController.handle(req, res)
     );
 
     app.listen(port, () => {
