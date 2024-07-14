@@ -12,6 +12,9 @@ export class ValidateOTPController {
     const user = new User({ userId: "", username, email, password });
     try {
       const accessToken = await this._useCase.execute(user, otp);
+      res.cookie("access-token", accessToken, {
+        httpOnly: true,
+      });
       res.status(201).send({ msg: "OTP Validate successfully", accessToken });
     } catch (err) {
       res

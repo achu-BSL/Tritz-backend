@@ -8,6 +8,9 @@ export class LoginController {
     const { email, password } = req.body;
     try {
       const accessToken = await this._useCase.execute(email, password);
+      res.cookie("access-token", accessToken, {
+        httpOnly: true,
+      });
       res.status(200).send({ msg: "Login successfully", accessToken });
     } catch (err) {
       res

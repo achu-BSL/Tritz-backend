@@ -10,9 +10,16 @@ export class GenerateOTPController {
     const user = new User({ username, email, password, userId: "" });
     try {
       const token = await this._useCase.execute(user);
-      res.status(201).send({registerToken: token, msg: "OTP has been sent successfully"});
+      res.cookie("register-token", token, {
+        httpOnly: true,
+      });
+      res
+        .status(201)
+        .send({ registerToken: token, msg: "OTP has been sent successfully" });
     } catch (err) {
-        res.status((err as Error & {statusCode: number}).statusCode || 500).send({msg: (err as Error).message})
+      res
+        .status((err as Error & { statusCode: number }).statusCode || 500)
+        .send({ msg: (err as Error).message });
     }
   }
 }

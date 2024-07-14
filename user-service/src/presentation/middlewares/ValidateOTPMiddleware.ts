@@ -10,13 +10,11 @@ export class ValidateOTPMiddleware {
     res: Response,
     next: NextFunction
   ) {
-    const bearerToken = req.headers.authorization;
+    const accessToken = req.cookies["register-token"];
     try {
-      if (!bearerToken) throw new Error("register token required");
-      if (typeof bearerToken !== "string")
-        throw new Error("Invalid register token");
+      if (!accessToken) throw new Error("register token required");
       const payload = this.registerTokenManager.verify(
-        bearerToken.split(" ")[1]
+        accessToken
       );
       req.user = payload;
       next();

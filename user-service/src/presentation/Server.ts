@@ -1,6 +1,7 @@
 import express from "express";
 
 import cors, { CorsOptions } from "cors";
+import cookieParser from "cookie-parser";
 import { GenerateOTPController } from "./controllers/GenerateOTPController";
 import { ValidateOTPMiddleware } from "./middlewares/ValidateOTPMiddleware";
 import { ValidateOTPController } from "./controllers/ValidateOTPController";
@@ -33,6 +34,7 @@ export class Server {
   }) {
     app.use(cors(corsOptions));
     app.use(express.json(), express.urlencoded({ extended: true }));
+    app.use(cookieParser());
 
     app.get("/", (_req, res) => {
       res.send({ status: "Running", service: "User-service", port });
