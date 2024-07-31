@@ -1,18 +1,18 @@
-import { Response } from "express";
-import { IRequest } from "../../application/interfaces/IRequest";
+import { Request, Response } from "express";
 import { GenerateResetPasswordOTP } from "../../application/use-cases/GenerateResetPasswordOTP";
+import { RESET_PASSWORD_OTP_TOKEN_COOKIE_KEY } from "../../config/constant";
 
 export class GenerateResetPasswordOTPController {
   constructor(
     private readonly generateResetPasswordOTP: GenerateResetPasswordOTP
   ) {}
 
-  async handle(req: IRequest<{ email: string }>, res: Response) {
-    const { email } = req.user!;
+  async handle(req: Request, res: Response) {
+    const { email } = req.body;
 
     try {
       const token = await this.generateResetPasswordOTP.execute(email);
-      res.cookie("reset-password-otp-token", token);
+      res.cookie(RESET_PASSWORD_OTP_TOKEN_COOKIE_KEY, token);
       res.status(200).send({ msg: "OTP has been sent", token });
     } catch (err) {
       res
