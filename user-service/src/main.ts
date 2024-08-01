@@ -65,7 +65,7 @@ const main = async () => {
     otpManager,
     resetPasswordTokenManager
   );
-  const resetPassword = new ResetPassword(userRepo);
+  const resetPassword = new ResetPassword(userRepo, accessTokenManager);
 
   // middlewares
   const validateOTPMiddleware = new ValidateOTPMiddleware(registerTokenManager);
