@@ -1,20 +1,16 @@
-import { randomInt } from "crypto";
 import { IUser } from "../interfaces/IUserEntity";
 import { IUserRepository } from "../interfaces/IUserRepository";
-import { OTPEntity } from "../../domain/entities/OTPEntity";
-import { IOTPRepository } from "../interfaces/IOTPRepository";
 import { ITokenManager } from "../interfaces/ITokenManager";
 import { IRegisterTokenPayload } from "../interfaces/IRegisterTokenPayload";
 
 import bcrypt from "bcrypt";
-import { MailService } from "../../infrastructure/services/MailService";
+import { IOTPManager } from "../interfaces/IOTPManger";
 
 export class GenerateOTP {
   constructor(
     private userRepo: IUserRepository,
-    private otpRepo: IOTPRepository,
-    private registerTokenManger: ITokenManager<IRegisterTokenPayload>,
-    private mailService: MailService
+    private otpManager: IOTPManager,
+    private registerTokenManger: ITokenManager<IRegisterTokenPayload>
   ) {}
 
   async execute(user: IUser) {
@@ -24,17 +20,11 @@ export class GenerateOTP {
     this.validateEmail(user.email);
     this.validatePassword(user.password);
 
-    const hashedPassword = await bcrypt.hash(user.password, 10);
+    const otp = this.otpManager.generateOTP(4);
+    await this.otpManager.saveOTP(user.email, otp);
+    await this.otpManager.mailOTP(user.email, otp, "Register OTP");
 
-    const otp = `${randomInt(0,9)}${randomInt(0,9)}${randomInt(0,9)}${randomInt(0,9)}`;
-    const expiresAt = new Date(Date.now() + 10 * 60 * 1000);
-    await this.otpRepo.save(new OTPEntity(user.email, otp, expiresAt));
-    await this.mailService.sendMail({
-      to: user.email,
-      subject: "Register OTP",
-      text: `Your OTP${otp}`,
-      html: `<h2>Your OTP is ${otp} </h2>`,
-    });
+    const hashedPassword = await bcrypt.hash(user.password, 10);
 
     const token = this.registerTokenManger.generate(
       {

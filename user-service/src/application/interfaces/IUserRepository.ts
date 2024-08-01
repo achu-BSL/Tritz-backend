@@ -9,4 +9,5 @@ export interface IUserRepository {
     email: string,
     username: string
   ) => Promise<IUser | null>;
+  updateUserByEmail: (email: string, updatedUser: Partial<IUser>) => Promise<IUser | null>;
 }
