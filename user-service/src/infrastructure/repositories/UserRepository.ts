@@ -66,4 +66,16 @@ export class UserRepository implements IUserRepository {
       password: mongoUser.password,
     });
   }
+
+
+  async updateUserByEmail (email: string, updatedUser: Partial<IUser>) {
+    const mongoUser = await userModel.findOneAndUpdate({email}, updatedUser, {new: true});
+    if(!mongoUser) return null;
+    return new User({
+      userId: mongoUser._id.toString(),
+      username: mongoUser.username,
+      email: mongoUser.email,
+      password: mongoUser.password,
+    })
+  }
 }
