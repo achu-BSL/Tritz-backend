@@ -13,9 +13,7 @@ export class ValidateOTPMiddleware {
     const accessToken = req.cookies["register-token"];
     try {
       if (!accessToken) throw new Error("register token required");
-      const payload = this.registerTokenManager.verify(
-        accessToken
-      );
+      const payload = this.registerTokenManager.verify(accessToken);
       req.user = payload;
       next();
     } catch (err) {
